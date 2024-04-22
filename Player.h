@@ -5,5 +5,5 @@ class Player {
 		char mark;
 	public:
 		Player(char m);
-		char getMark();
+		char getMark() const;
 };

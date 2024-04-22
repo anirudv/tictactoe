@@ -5,20 +5,20 @@ using namespace std;
 
 Game::Game() : playerX('X'), playerO('O') {}
 
-void start() {
+void Game::start() {
 	board.resetBoard();
 	currentPlayer = &playerX;
 }
 
-void play () {
+void Game::play () {
 	int row;
 	int col;
-	while(true):
+	while(true) {
 
 		cout << "current board: \n";
 		board.display();
 
-		cout << currentPlayer->getMark() << " turn. Enter a row and column number between 0 and 2 separated by a space. Ex: 0 2 \n";
+		cout << currentPlayer->getMark() << " turn. Enter a row and column number between 0 and 2 separated by a space. \n";
 		cin >> row >> col;
 
 		if (row < 0 || row > 2 || col < 0 || col > 2) {
@@ -46,7 +46,8 @@ void play () {
 			}
 		}
 		else {
-			cout << "cell occupied. pick another one please \n"
+			cout << "cell occupied. pick another one please \n";
 		}
+	}
 }
 
