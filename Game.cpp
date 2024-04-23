@@ -19,35 +19,26 @@ void Game::play () {
 		board.display();
 
 		cout << currentPlayer->getMark() << " turn. Enter a row and column number between 0 and 2 separated by a space. \n";
-		cin >> row >> col;
+		currentPlayer->makeMove(board);
 
-		if (row < 0 || row > 2 || col < 0 || col > 2) {
-			cout << "Invalid\n" << endl;
-			continue;
+		if (board.checkWin(currentPlayer->getMark())) {
+			cout << currentPlayer->getMark() << " wins!\n" << endl;
+			break;
 		}
 
-		if (board.placeMark(row, col, currentPlayer->getMark())) {
-			if (board.checkWin(currentPlayer->getMark())) {
-				cout << currentPlayer->getMark() << " wins!\n" << endl;
-				break;
-			}
 			
-			if (board.isBoardFull())
-			{
-				cout << "draw\n" << endl;
-				break;
-			}
+		if (board.isBoardFull())
+		{
+			cout << "draw\n" << endl;
+			break;
+		}
 
-			if (currentPlayer == &playerX) {
-				currentPlayer = &playerO;
-			}
-			else {
-				currentPlayer = &playerX;
-			}
+		if (currentPlayer == &playerX) {
+			currentPlayer = &playerO;
 		}
 		else {
-			cout << "cell occupied. pick another one please \n";
+			currentPlayer = &playerX;
+		}
 		}
 	}
-}
 

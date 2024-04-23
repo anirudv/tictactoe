@@ -1,12 +1,12 @@
 #pragma once
 #include "Board.h"
-#include "Player.h"
+#include "HumanPlayer.h"
 
 class Game {
 	private: 
 		Board board;
-		Player playerX;
-		Player playerO;
+		HumanPlayer playerX;
+		HumanPlayer playerO;
 		Player* currentPlayer;
 
 	public:

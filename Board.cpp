@@ -15,7 +15,7 @@ void Board::resetBoard() { //this clears the board
 			}
 		}
 
-bool Board::isCellEmpty(int row, int col) { //this checks if 
+bool Board::isCellEmpty(int row, int col) const { //this checks if 
 	return board[row][col] == '-';
 }
 
@@ -27,7 +27,7 @@ bool Board::placeMark(int row, int col, char mark) {
 	return false; 
 }
 
-bool Board::isBoardFull() {
+bool Board::isBoardFull() const {
 	for (int i = 0; i < 3; i++)
 	{
 		for (int j = 0; j < 3; j++) {
@@ -39,7 +39,7 @@ bool Board::isBoardFull() {
 	return true;
 }
 
-bool Board::checkWin(char mark) {
+bool Board::checkWin(char mark) const{
 	for (int i = 0; i < 3; ++i) {
 		if (board[i][0] == mark && board[i][1] == mark && board[i][2] == mark) {
 			return true;
@@ -57,7 +57,7 @@ bool Board::checkWin(char mark) {
 	return false;
 }
 
-void Board::display() {
+void Board::display() const {
 	cout << "  0 1 2\n";
 	for (int i = 0; i < 3; ++i) {
 		cout << i << " ";

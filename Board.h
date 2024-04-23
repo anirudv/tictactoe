@@ -7,11 +7,11 @@ class Board {
 	public:
 		Board();
 		void resetBoard();
-		bool isCellEmpty(int row, int col);
+		bool isCellEmpty(int row, int col) const;
 		bool placeMark(int row, int col, char mark);
-		bool isBoardFull();
-		bool checkWin(char mark);
-		void display();
+		bool isBoardFull() const;
+		bool checkWin(char mark) const;
+		void display() const;
 
 
 };
