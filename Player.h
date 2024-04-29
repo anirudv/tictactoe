@@ -6,6 +6,7 @@ class Player {
 		char mark;
 	public:
 		Player(char m);
+		virtual ~Player();
 		char getMark() const;
 		virtual void makeMove(Board& board) = 0;
 };

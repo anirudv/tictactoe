@@ -5,6 +5,9 @@ using namespace std;
 
 HumanPlayer::HumanPlayer(char m) : Player(m) {}
 
+HumanPlayer::~HumanPlayer() {}
+
+
 void HumanPlayer::makeMove(Board& board) {
 	int row, col;
 	while (true) {

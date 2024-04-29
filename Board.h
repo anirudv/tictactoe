@@ -9,7 +9,7 @@ class Board {
 		void resetBoard();
 		bool isCellEmpty(int row, int col) const;
 		bool placeMark(int row, int col, char mark);
-		bool isBoardFull() const;
+		bool isBoardFull() const; 
 		bool checkWin(char mark) const;
 		void display() const;
 
