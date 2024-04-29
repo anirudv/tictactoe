@@ -1,6 +1,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include "Board.h"
+#include "scoreboard.h"
 #include <iostream>
 #include <string>
 
@@ -117,9 +118,11 @@ void handle_click(SDL_Event& event) {
         if (board.checkWin(current_player)) {
             if (current_player == 'X') {
                 scoreX++;
+                renderScoreboardWindow(renderer, scoreX, scoreO);
                 SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Game Over", "Player X wins!", NULL);
             } else {
                 scoreO++;
+                renderScoreboardWindow(renderer, scoreX, scoreO);
                 SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Game Over", "Player O wins!", NULL);
             }
             board.resetBoard();
@@ -165,8 +168,65 @@ void render_loop() {
 }
 
 int main(int argc, char* argv[]) {
+    // Initialize SDL
+    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+        cerr << "SDL initialization failed: " << SDL_GetError() << endl;
+        return 1;
+    }
+
+    // Initialize TTF
+    if (TTF_Init() < 0) {
+        cerr << "TTF initialization failed: " << TTF_GetError() << endl;
+        SDL_Quit();
+        return 1;
+    }
+
+    // Create the main game window and renderer
+    SDL_Window* window = SDL_CreateWindow("Tic Tac Toe", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN);
+    if (!window) {
+        cerr << "Window creation failed: " << SDL_GetError() << endl;
+        TTF_Quit();
+        SDL_Quit();
+        return 1;
+    }
+
+    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    if (!renderer) {
+        cerr << "Renderer creation failed: " << SDL_GetError() << endl;
+        SDL_DestroyWindow(window);
+        TTF_Quit();
+        SDL_Quit();
+        return 1;
+    }
+
+    // Initialize the scoreboard window
+    initializeScoreboardWindow(renderer, WINDOW_WIDTH, SCORE_COUNT_HEIGHT);
+
+    // Example scores
+    int scoreX = 5;
+    int scoreO = 3;
+
+    // Render the scoreboard window with the example scores
+    renderScoreboardWindow(renderer, scoreX, scoreO);
+
+    // Initialize the game
     init();
+
+    // Run the game loop
     render_loop();
+
+    // Close the game and quit SDL
     close();
+
+    // Close the scoreboard window and quit SDL
+    closeScoreboardWindow();
+
+    // Clean up and quit SDL
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    TTF_Quit();
+    SDL_Quit();
+
     return 0;
 }
+
