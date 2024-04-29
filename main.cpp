@@ -100,28 +100,7 @@ void draw_board() {
         }
     }
 
-    string scoreText = "Score: X - " + to_string(scoreX) + " | O - " + to_string(scoreO);
-
-    SDL_Color textColor = {255, 255, 255, 255}; // White color for the text
-    TTF_Font* font = TTF_OpenFont("arial.ttf", 24); // Load a font, adjust size as needed
-
-    SDL_Surface* scoreSurface = TTF_RenderText_Solid(font, scoreText.c_str(), textColor);
-    SDL_Texture* scoreTexture = SDL_CreateTextureFromSurface(renderer, scoreSurface);
-
-    int scoreWidth, scoreHeight;
-    SDL_QueryTexture(scoreTexture, NULL, NULL, &scoreWidth, &scoreHeight);
-
-    SDL_Rect scoreRect = {10, WINDOW_HEIGHT - 30, scoreWidth, scoreHeight}; 
-
-
-    SDL_RenderCopy(renderer, scoreTexture, NULL, &scoreRect);
-
-    SDL_FreeSurface(scoreSurface);
-    SDL_DestroyTexture(scoreTexture);
-    TTF_CloseFont(font);
-
-    SDL_RenderPresent(renderer); // Render the changes to the window
-
+    SDL_RenderPresent(renderer);
 }
 
 
