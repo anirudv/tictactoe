@@ -13,5 +13,8 @@ class Board {
 		bool checkWin(char mark) const;
 		void display() const;
 
+		char getMarkAt(int row, int col) const;
+    	void setMarkAt(int row, int col, char mark);
+
 
 };

@@ -64,11 +64,9 @@ void render_text(const string& text, const SDL_Point& position) {
 }
 
 
-
 void draw_board() {
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     SDL_RenderClear(renderer);
-
 
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
@@ -82,53 +80,81 @@ void draw_board() {
 
     for (int i = 0; i < BOARD_SIZE; ++i) {
         for (int j = 0; j < BOARD_SIZE; ++j) {
-            if (board[i][j] == 'X') {
-                SDL_RenderDrawLine(renderer, j * CELL_SIZE + 10, i * CELL_SIZE + 10, (j+1) * CELL_SIZE - 10, (i+1) * CELL_SIZE - 10);
-                SDL_RenderDrawLine(renderer, (j+1) * CELL_SIZE - 10, i * CELL_SIZE + 10, j * CELL_SIZE + 10, (i+1) * CELL_SIZE - 10);
-
-            }
-
-            else if (board[i][j] == 'O') {
-                int radius = CELL_SIZE / 3;
-                int center_x = j * CELL_SIZE + CELL_SIZE / 2;
-                int center_y = i * CELL_SIZE + CELL_SIZE / 2;
-                for (int k = 0; k <= 360; k+=5) {
-                    double rad = k * 3.14159 / 180;
-                    int x = center_x + radius * cos(rad);
-                    int y = center_y + radius * sin(rad);
-                    SDL_RenderDrawPoint(renderer, x, y);
+            if (!board.isCellEmpty(i, j)) {
+                char mark = board.getMarkAt(i, j);
+                if (mark == 'X') {
+                    SDL_RenderDrawLine(renderer, j * CELL_SIZE + 10, i * CELL_SIZE + 10, (j+1) * CELL_SIZE - 10, (i+1) * CELL_SIZE - 10);
+                    SDL_RenderDrawLine(renderer, (j+1) * CELL_SIZE - 10, i * CELL_SIZE + 10, j * CELL_SIZE + 10, (i+1) * CELL_SIZE - 10);
+                } else if (mark == 'O') {
+                    int radius = CELL_SIZE / 3;
+                    int center_x = j * CELL_SIZE + CELL_SIZE / 2;
+                    int center_y = i * CELL_SIZE + CELL_SIZE / 2;
+                    for (int k = 0; k <= 360; k+=5) {
+                        double rad = k * 3.14159 / 180;
+                        int x = center_x + radius * cos(rad);
+                        int y = center_y + radius * sin(rad);
+                        SDL_RenderDrawPoint(renderer, x, y);
+                    }
                 }
             }
         }
     }
+
     string scoreText = "Score: X - " + to_string(scoreX) + " | O - " + to_string(scoreO);
-    SDL_Point textPosition = {textX, textY};
-    render_text(scoreText, textPosition);
+
+    SDL_Color textColor = {255, 255, 255, 255}; // White color for the text
+    TTF_Font* font = TTF_OpenFont("arial.ttf", 24); // Load a font, adjust size as needed
+
+    SDL_Surface* scoreSurface = TTF_RenderText_Solid(font, scoreText.c_str(), textColor);
+    SDL_Texture* scoreTexture = SDL_CreateTextureFromSurface(renderer, scoreSurface);
+
+    int scoreWidth, scoreHeight;
+    SDL_QueryTexture(scoreTexture, NULL, NULL, &scoreWidth, &scoreHeight);
+
+    SDL_Rect scoreRect = {10, WINDOW_HEIGHT - 30, scoreWidth, scoreHeight}; 
 
 
-    SDL_RenderPresent(renderer);
+    SDL_RenderCopy(renderer, scoreTexture, NULL, &scoreRect);
+
+    SDL_FreeSurface(scoreSurface);
+    SDL_DestroyTexture(scoreTexture);
+    TTF_CloseFont(font);
+
+    SDL_RenderPresent(renderer); // Render the changes to the window
 
 }
+
 
 void handle_click(SDL_Event& event) {
+    int x, y;
+    SDL_GetMouseState(&x, &y);
 
-    if (board.checkWin(current_player)) {
-        cout << current_player << " wins!\n" << endl;
-    }
+    int row = y / CELL_SIZE;
+    int col = x / CELL_SIZE;
 
-    if (current_player == 'X' ) {
-        scoreX++;
-    } else {
-        scoreO++;
-    }
+    if (row >= 0 && row < BOARD_SIZE && col >= 0 && col < BOARD_SIZE && board.isCellEmpty(row, col)) {
+        board.placeMark(row, col, current_player); // Corrected the usage of placeMark here
 
-    for (int i = 0; i < BOARD_SIZE; ++i) {
-        for (int j = 0; j < BOARD_SIZE; ++j) {
-            board[i][j] = '-';
+        if (board.checkWin(current_player)) {
+            if (current_player == 'X') {
+                scoreX++;
+                SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Game Over", "Player X wins!", NULL);
+            } else {
+                scoreO++;
+                SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Game Over", "Player O wins!", NULL);
+            }
+            board.resetBoard();
+        } else if (board.isBoardFull()) {
+            SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Game Over", "It's a draw!", NULL);
+            board.resetBoard();
+        } else {
+            current_player = (current_player == 'X') ? 'O' : 'X';
         }
     }
-    current_player = 'X';
 }
+
+
+
 
 void handle_restart_button(SDL_Event& event) {
     int x, y;
@@ -136,7 +162,7 @@ void handle_restart_button(SDL_Event& event) {
     if (y >= WINDOW_HEIGHT - 50 && y <= WINDOW_HEIGHT && event.type == SDL_MOUSEBUTTONDOWN) {
         for (int i = 0; i < BOARD_SIZE; ++i) {
             for (int j = 0; j < BOARD_SIZE; ++j) {
-                board[i][j] = '-';
+                board.setMarkAt(i,j,'-');
             }
         }
         current_player = 'X';

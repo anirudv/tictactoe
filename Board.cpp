@@ -68,6 +68,14 @@ void Board::display() const {
 	}
 }
 
+char Board::getMarkAt(int row, int col) const {
+    return board[row][col];
+}
+
+void Board::setMarkAt(int row, int col, char mark) {
+    board[row][col] = mark;
+}
+
 			
 			
   
