@@ -203,8 +203,8 @@ int main(int argc, char* argv[]) {
     initializeScoreboardWindow(renderer, WINDOW_WIDTH, SCORE_COUNT_HEIGHT);
 
     // Example scores
-    int scoreX = 5;
-    int scoreO = 3;
+    int scoreX = 0;
+    int scoreO = 0;
 
     // Render the scoreboard window with the example scores
     renderScoreboardWindow(renderer, scoreX, scoreO);
